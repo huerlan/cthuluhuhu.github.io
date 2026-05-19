@@ -1,0 +1,146 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>一个小小的克苏鲁碎片(点击眼睛即可拾取)</title>
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="description" content="">
+
+  <meta property="og:title" content="">
+  <meta property="og:type" content="">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="">
+  <meta property="og:image:alt" content="">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.png">
+
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#fafafa">
+
+  <link rel="stylesheet" href="css/p1.css">
+  <style>
+    /* 自定义字体 */
+    @font-face {
+      font-family: 'LiXuke';
+      src: url('Font/李旭科经典行书.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    /* 全屏背景图 */
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background-image: url('img/p1.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      /* 让 body 占满整个视口，用于监听点击 */
+      position: relative;
+    }
+
+    /* 左下角文字容器 - 初始隐藏 */
+    .enter-link {
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      z-index: 100;
+      display: none;  /* 一开始不显示 */
+    }
+
+    /* 跳转链接样式（出现后的效果） */
+    .enter-link a {
+      font-family: 'LiXuke', '华文行书', 'Microsoft YaHei', cursive;
+      font-size: 1.8rem;
+      color: #c7b58a;
+      text-shadow: 2px 2px 6px #000000, 0 0 8px #2a4b3a;
+      text-decoration: none;
+      background: rgba(0, 0, 0, 0.45);
+      padding: 12px 24px;
+      border-radius: 40px;
+      backdrop-filter: blur(4px);
+      border: 1px solid #5b8a6f;
+      transition: all 0.3s ease;
+      display: inline-block;
+      letter-spacing: 2px;
+    }
+
+    .enter-link a:hover {
+      color: #ecd672;
+      text-shadow: 0 0 12px #6f9e82;
+      background: rgba(0, 0, 0, 0.7);
+      border-color: #b8d9c4;
+      transform: scale(1.02);
+    }
+
+    /* 可选：文字出现时的淡入动画（增加神秘感） */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .enter-link.show {
+      display: block;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <!-- Add your site or application content here -->
+  <!-- 左下角文字（初始隐藏） -->
+  <div class="enter-link" id="enterLinkContainer">
+    <a href="hello.html" id="enterLink">欢迎来到克苏鲁世界</a>
+  </div>
+
+  <script>
+    // 获取文字容器
+    const container = document.getElementById('enterLinkContainer');
+    // 标志位：确保只触发一次
+    let appeared = false;
+
+    // 点击页面任意位置时，显示文字
+    function showTextOnClick() {
+      if (!appeared) {
+        // 添加 show 类，让文字出现（并播放淡入动画）
+        container.classList.add('show');
+        appeared = true;
+        // 文字出现后，可以选择移除全局监听器（也可以保留，但不再执行显示逻辑）
+        document.removeEventListener('click', showTextOnClick);
+      }
+    }
+
+    // 监听整个页面的点击事件
+    document.addEventListener('click', showTextOnClick);
+  </script>
+
+  <!-- 背景音乐 -->
+  <script>
+    let bgm = new Audio('audio/the_grotto.mp3');
+    bgm.loop = true;
+    document.body.addEventListener('click', function() {
+      bgm.play().catch(function(error) {
+        console.log('自动播放被阻止或出错:', error);
+      });
+    }, { once: true });
+
+    console.log('音乐已准备好，点击页面任意位置开始播放');
+  </script>
+</body>
+
+</html>
