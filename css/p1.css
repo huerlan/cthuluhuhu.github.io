@@ -1,0 +1,22 @@
+/* ---------- 字体 ---------- */
+@font-face {
+  font-family: 'LiXuke';
+  src: url('../Font/李旭科经典行书.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;  /* 优化加载 */
+}
+/* ---------- 全局基础样式（HTML5 Boilerplate 风格） ---------- */
+html {
+  color: #d4c9a6;      /* 古旧羊皮纸色，作为后备 */
+  font-size: 1em;
+  line-height: 1.4;
+}
+/* 选中文字的颜色（暗绿色，克苏鲁风） */
+::selection {
+  background: #2c4b3e;
+  text-shadow: none;
+  color: #e6d5a8;
+}
+
+
