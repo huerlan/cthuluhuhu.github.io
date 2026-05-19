@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>注视我</title>
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="description" content="">
+
+  <meta property="og:title" content="">
+  <meta property="og:type" content="">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="">
+  <meta property="og:image:alt" content="">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.png">
+
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#fafafa">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* 平滑滚动 + 强制整屏捕捉 */
+    html {
+      scroll-behavior: smooth;
+      scroll-snap-type: y mandatory;
+    }
+
+    body {
+      background-color: #000;
+      color: #c7b28b;
+      font-family: 'Segoe UI', '华文行书', 'Microsoft YaHei', 'LiXuke', cursive;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* 每个区块占满视口 */
+    .section {
+      scroll-snap-align: start;
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      padding: 80px 5% 60px;
+      background-color: #000;
+      border-bottom: 1px solid rgba(80, 60, 40, 0.3);
+    }
+
+    /* 固定导航栏 */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #5e3a2c;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 5%;
+      flex-wrap: wrap;
+    }
+
+    .logo img {
+      height: 50px;
+      width: auto;
+      filter: drop-shadow(0 0 4px #6a5a3a);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* 按钮使用 back.png 作为背景 */
+    .nav-btn {
+      background: url('img/back.png') center/cover no-repeat;
+      background-size: 100% 100%;
+      border: none;
+      padding: 10px 22px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #ecd8b4;
+      text-shadow: 0 0 4px #2e1e12;
+      cursor: pointer;
+      transition: 0.2s;
+      font-family: inherit;
+      letter-spacing: 2px;
+      background-color: rgba(30, 20, 10, 0.7);
+      background-blend-mode: overlay;
+      border-radius: 40px;
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-2px);
+      color: #ffe6b3;
+      text-shadow: 0 0 8px #b87c4a;
+      background-color: rgba(50, 30, 10, 0.9);
+    }
+
+    /* 首页主图 */
+    .hero-img {
+      max-width: 80%;
+      max-height: 70vh;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.7), 0 0 15px #6a4a2a;
+      border: 1px solid #7a5a3a;
+    }
+
+    /* 第二页：作者介绍 */
+    .author-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 50px;
+      max-width: 1200px;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      border-radius: 40px;
+      padding: 30px;
+      border: 1px solid #5e3e2a;
+    }
+    .author-photo {
+      flex: 1;
+      min-width: 200px;
+      text-align: center;
+    }
+    .author-photo img {
+      width: 100%;
+      max-width: 280px;
+      border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
+      box-shadow: 0 0 20px #2f4f3a;
+      border: 3px solid #ab8a54;
+    }
+    .author-bio {
+      flex: 2;
+      padding: 20px;
+    }
+    .author-bio h2 {
+      font-size: 2rem;
+      border-left: 6px solid #b87a4a;
+      padding-left: 20px;
+      margin-bottom: 20px;
+    }
+    .bio-timeline {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px,1fr));
+      gap: 12px;
+      list-style: none;
+    }
+    .bio-timeline li {
+      background: rgba(30,20,10,0.5);
+      padding: 8px 12px;
+      border-radius: 30px;
+      font-size: 0.95rem;
+    }
+
+    /* 第三页：世界体系卡片 */
+    .cosmos-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      max-width: 1300px;
+      margin-top: 30px;
+    }
+    .cosmos-card {
+      background: #0f0a05ee;
+      backdrop-filter: blur(4px);
+      border: 1px solid #8b6b42;
+      border-radius: 30px;
+      padding: 20px;
+      width: 260px;
+      text-align: center;
+      transition: 0.2s;
+    }
+    .cosmos-card h3 {
+      color: #e9cb9a;
+      border-bottom: 1px dashed #7e5a38;
+      margin-bottom: 15px;
+    }
+
+    /* 第四页：七张作品网格 */
+    .works-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 30px;
+      width: 100%;
+      max-width: 1200px;
+      margin-top: 30px;
+    }
+    .work-item {
+      background: #1e1610;
+      border-radius: 20px;
+      overflow: hidden;
+      transition: 0.3s;
+      text-align: center;
+      border: 1px solid #6c4c2c;
+    }
+    .work-item img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+    }
+    .work-item p {
+      padding: 12px;
+      font-size: 0.9rem;
+    }
+    .work-item:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+      border-color: #bc8f60;
+    }
+
+    /* 第五页：四个探索链接 */
+    .explore-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 40px;
+      margin: 40px 0;
+    }
+    .explore-card {
+      text-align: center;
+      width: 200px;
+      transition: 0.2s;
+    }
+    .explore-card img {
+      width: 100%;
+      border-radius: 30px;
+      border: 2px solid #aa7a46;
+      box-shadow: 0 0 15px #000;
+    }
+    .explore-card a {
+      text-decoration: none;
+      color: #dfc9a3;
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+    .explore-card:hover {
+      transform: scale(1.03);
+    }
+    footer {
+      margin-top: 50px;
+      font-size: 0.8rem;
+      color: #887a60;
+      border-top: 1px solid #3e2e1c;
+      padding-top: 20px;
+      text-align: center;
+      width: 100%;
+    }
+
+    /* 音乐启动提示（优雅小标签） */
+    .music-tip {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 2000;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      color: #cfb57b;
+      border: 1px solid #8b6946;
+      cursor: pointer;
+      transition: 0.2s;
+      pointer-events: auto;
+    }
+    .music-tip:hover {
+      background: #2a1e12;
+      color: #ffdfa5;
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .section {
+        padding: 100px 5% 40px;
+      }
+      .author-container {
+        flex-direction: column;
+      }
+      .cosmos-card {
+        width: 100%;
+      }
+    }
+  </style>
+
+</head>
+<body>
+<!-- 固定导航栏 -->
+<div class="navbar">
+  <div class="logo">
+    <img src="img/logo.png" alt="Logo" onerror="this.src='https://via.placeholder.com/100?text=LOGO'">
+  </div>
+  <div class="nav-links">
+    <button class="nav-btn" data-target="author">作者介绍</button>
+    <button class="nav-btn" data-target="cosmos">世界体系</button>
+    <button class="nav-btn" data-target="works">衍生作品</button>
+    <button class="nav-btn" data-target="explore">开创探索</button>
+  </div>
+</div>
+
+<!-- 音乐启动提示（点击任意地方也可启动） -->
+<div class="music-tip" id="musicTip">🎧 触摸深渊，唤醒低语 🎧</div>
+
+<!-- 第一页：首页 -->
+<section id="home" class="section" style="justify-content: center;">
+  <img src="img/p3.jpg" alt="Cthulhu" class="hero-img" onerror="this.src='https://via.placeholder.com/800x400?text=p3.jpg'">
+  <p style="margin-top: 30px; font-size: 1.2rem; letter-spacing: 4px;">「 在拉莱耶的宅邸中，长眠的克苏鲁等待梦境 」</p>
+</section>
+
+<!-- 第二页：作者介绍 -->
+<section id="author" class="section">
+  <div class="author-container">
+    <div class="author-photo">
+      <img src="img/HP.jpg" alt="H.P.Lovecraft" onerror="this.src='https://via.placeholder.com/250?text=HP.jpg'">
+    </div>
+    <div class="author-bio">
+      <h2>H.P.洛夫克拉夫特<br><span style="font-size:1rem;">1890.8.20 – 1937.3.15</span></h2>
+      <ul class="bio-timeline">
+        <li>📜 1890 · 出生在美国罗德岛</li>
+        <li>🌙 童年阴影 & 奇幻启蒙</li>
+        <li>📚 早慧的少年 – 沉迷文学、哲学、历史</li>
+        <li>⚡ 高中退学，自学成才</li>
+        <li>✍️ 文坛起步：从投稿到被拒</li>
+        <li>🤝 结识挚友，互相成就 (德雷斯等)</li>
+        <li>🕯️ 1937 · 悄然离世</li>
+        <li>🌟 身后成名，永恒的影响</li>
+      </ul>
+      <p style="margin-top: 20px;">“人类最古老而强烈的情绪是恐惧，而最古老最强烈的恐惧是对未知的恐惧。”</p>
+    </div>
+  </div>
+</section>
+
+<!-- 第三页：世界体系 -->
+<section id="cosmos" class="section">
+  <h2 style="margin-bottom: 20px;">🌌 宇宙层级 · 旧日支配者体系</h2>
+  <div class="cosmos-grid">
+    <div class="cosmos-card"><h3>外神</h3><p>阿撒托斯、奈亚拉托提普<br>位于宇宙顶端，超越人类理解</p></div>
+    <div class="cosmos-card"><h3>旧日支配者</h3><p>克苏鲁、哈斯塔、克图格亚<br>沉睡于地球或深海，力量强大</p></div>
+    <div class="cosmos-card"><h3>古神</h3><p>巴斯特、诺登斯<br>相对友善，限制旧日支配者</p></div>
+    <div class="cosmos-card"><h3>星之子 & 仆从</h3><p>深潜者、夜魇、修格斯<br>执行旧日支配者的意志</p></div>
+    <div class="cosmos-card"><h3>独立种族</h3><p>伟大种族伊斯、食尸鬼<br>各有独特文明</p></div>
+    <div class="cosmos-card"><h3>宇宙观核心</h3><p>无限混沌、人类渺小<br>未知即恐惧，理智脆弱</p></div>
+  </div>
+  <p style="margin-top: 30px; font-style: italic;">“在拉莱耶他的宫殿里，死去的克苏鲁等待做梦。”</p>
+</section>
+
+<!-- 第四页：衍生作品（7张图） -->
+<section id="works" class="section">
+  <h2>📖 衍生作品 </h2>
+  <div class="works-grid">
+    <!-- 请将实际图片按文件名放入 img/ 目录，并修改 src 路径 -->
+    <div class="work-item"><img src="img/2p1.jpg" alt="作品1" onerror="this.src='https://picsum.photos/200/150?random=1'"><p>《诡秘之主》</p></div>
+    <div class="work-item"><img src="img/2p2.jpg" alt="作品2" onerror="this.src='https://picsum.photos/200/150?random=2'"><p>《盒中之海》</p></div>
+    <div class="work-item"><img src="img/2p3.jpg" alt="作品3" onerror="this.src='https://picsum.photos/200/150?random=3'"><p>《道诡异仙》</p></div>
+    <div class="work-item"><img src="img/2p4.jpg" alt="作品4" onerror="this.src='https://picsum.photos/200/150?random=4'"><p>The Call Of Ktulu</p></div>
+    <div class="work-item"><img src="img/2p5.jpg" alt="作品5" onerror="this.src='https://picsum.photos/200/150?random=5'"><p>《星之彩》电影</p></div>
+    <div class="work-item"><img src="img/2p7.jpg" alt="作品6" onerror="this.src='https://picsum.photos/200/150?random=6'"><p>《洛夫克拉夫特》漫画</p></div>
+    <div class="work-item"><img src="img/2p6.jpg" alt="作品7" onerror="this.src='https://picsum.photos/200/150?random=7'"><p>《克苏鲁呼唤》电子游戏</p></div>
+  </div>
+
+</section>
+
+<!-- 第五页：开创探索 -->
+<section id="explore" class="section">
+  <h2>🔍 开创 · 探索不可名状之域</h2>
+  <div class="explore-grid">
+    <div class="explore-card">
+      <a href="https://www.cthulhuclub.com/" target="_blank" rel="noopener noreferrer">
+        <img src="img/3p1.png" alt="克苏鲁公社" onerror="this.src='https://via.placeholder.com/150?text=公社'">
+        <span>克苏鲁公社</span>
+      </a>
+    </div>
+    <div class="explore-card">
+      <a href="https://www.hplhs.org/" target="_blank" rel="noopener noreferrer">
+        <img src="img/3p2.png" alt="HPLHS" onerror="this.src='https://via.placeholder.com/150?text=HPLHS'">
+        <span>H.P.洛夫克拉夫特历史学会</span>
+      </a>
+    </div>
+    <div class="explore-card">
+      <a href="https://oldoneskeeper.com" target="_blank" rel="noopener noreferrer">
+        <img src="img/3p3.png" alt="Old Ones Keeper" onerror="this.src='https://via.placeholder.com/150?text=OldKeeper'">
+        <span>Old Ones Keeper</span>
+      </a>
+    </div>
+    <div class="explore-card">
+      <a href="https://lovecraft.fandom.com/wiki/Cthulhu" target="_blank" rel="noopener noreferrer">
+        <img src="img/3p4.png" alt="Fandom" onerror="this.src='https://via.placeholder.com/150?text=Fandom'">
+        <span>Lovecraft Wiki</span>
+      </a>
+    </div>
+  </div>
+  <footer>
+    🐙 没联系方式，别联系我 —— 深渊只可远观 🐙
+  </footer>
+</section>
+
+<script>
+  // ---------- 背景音乐（循环播放，用户首次交互后启动）----------
+  const bgm = new Audio('audio/Something_Wicked.mp3');
+  bgm.loop = true;
+  bgm.volume = 0.5;   // 音量适中，不盖过人声
+
+  let musicStarted = false;
+
+  function startBgm() {
+    if (!musicStarted) {
+      bgm.play().then(() => {
+        musicStarted = true;
+        // 隐藏提示小标签
+        const tip = document.getElementById('musicTip');
+        if(tip) tip.style.opacity = '0';
+        setTimeout(() => { if(tip) tip.style.display = 'none'; }, 500);
+      }).catch(e => console.log('音乐播放失败:', e));
+    }
+  }
+
+  // 监听整个页面的第一次有效点击（触摸或鼠标）
+  const startMusicOnInteraction = function(e) {
+    // 避免干扰导航按钮的正常滚动（但仍然会启动音乐）
+    startBgm();
+    // 一旦启动就移除全局监听，避免重复触发
+    document.removeEventListener('click', startMusicOnInteraction);
+    document.removeEventListener('touchstart', startMusicOnInteraction);
+  };
+  document.addEventListener('click', startMusicOnInteraction);
+  document.addEventListener('touchstart', startMusicOnInteraction);
+
+  // 额外的：点击右下角提示也可以启动
+  const musicTip = document.getElementById('musicTip');
+  if(musicTip) {
+    musicTip.addEventListener('click', (e) => {
+      e.stopPropagation();
+      startBgm();
+    });
+  }
+
+  // ---------- 导航按钮平滑滚动 ----------
+  const btns = document.querySelectorAll('.nav-btn');
+  const sectionsMap = {
+    author: document.getElementById('author'),
+    cosmos: document.getElementById('cosmos'),
+    works: document.getElementById('works'),
+    explore: document.getElementById('explore')
+  };
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-target');
+      if(targetId && sectionsMap[targetId]) {
+        sectionsMap[targetId].scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
